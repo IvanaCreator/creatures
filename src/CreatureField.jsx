@@ -1,7 +1,9 @@
+import {useState} from 'react';
 import Creature from './Creature.jsx';
 
 function CreatureField() {
-    const creatureData =[
+    
+    const [creatures, setCreatures] = useState([
         {
             id: 1, name: "Mr. Fresh", age: 3,
             sleepImageUrl: "/images/first_sleep.png",
@@ -32,7 +34,35 @@ function CreatureField() {
             awakeImageUrl: "/images/fifth_awake.png",
             x: 550, y: 590
         }
-    ]
+    ]);
+
+
+    const handleWakeCreature = (id) => {
+        setCreatures(prevCreatures =>
+            prevCreatures.map(creature => {
+                if (creature.id !== id) {
+                    return creature;
+                }
+
+                if (!creature.isAwake) {
+                    const randomX = Math.floor(Math.random() * 680);
+                    const randomY = Math.floor(Math.random() * 640);
+
+                    return {
+                        ...creature,
+                        isAwake: true,
+                        x: randomX,
+                        y: randomY
+                    };
+                }
+
+                return {
+                    ...creature,
+                    isAwake: false
+                };
+            })
+        );
+    };
 
     const fieldStyle = {
         position: 'relative',
@@ -43,18 +73,24 @@ function CreatureField() {
         backgroundColor: '#6b8c66'
     };
 
+    const awakeCount = creatures.filter(
+        creature => creature.isAwake
+    ).length;
+    
+
     return (
         <div style={fieldStyle}>
-            {creatureData.map(creature => (
+            <p style={{ padding: '10px', margin: 0 }}>
+                {awakeCount} of {creatures.length} creatures awake
+            </p>
+
+            {creatures.map(creature => (
                 <Creature
                     key={creature.id}
-                    name={creature.name}
-                    age={creature.age}
-                    sleepImageUrl={creature.sleepImageUrl}
-                    awakeImageUrl={creature.awakeImageUrl}
-                    x={creature.x} y={creature.y}
+                    {...creature}
+                    onWake={handleWakeCreature}
                 />
-            ))} 
+            ))}
         </div>
     );
 }

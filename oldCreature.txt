@@ -1,0 +1,39 @@
+import {useState}from 'react';
+
+function Creature(props) {
+    const [x, setX] = useState(props.x);
+    const [y, setY] = useState(props.y);
+
+    const style = {
+        position: 'absolute',
+        left: x + 'px',
+        top: y + 'px',
+        textAlign: 'center',
+        imageRendering: 'pixelated'
+    };
+
+    let [isAwake, setIsAwake] = useState(false);
+
+    const handleClick = () => {
+        setIsAwake(!isAwake);
+        if (!isAwake) {
+            const randomX = Math.floor(Math.random() * (680));
+            const randomY = Math.floor(Math.random() * (680));
+
+            setX(randomX);
+            setY(randomY);
+            
+        }
+    }
+
+    let currentImage = isAwake ? props.awakeImageUrl : props.sleepImageUrl;
+
+    return  (
+        <div style={style} onClick={handleClick}>
+            <img src={currentImage} alt={props.name} width="120" />
+            <p>{props.name}, age {props.age}</p>
+        </div>
+    );
+}
+
+export default Creature;
